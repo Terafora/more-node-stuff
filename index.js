@@ -2,16 +2,34 @@ const http = require('http');
 
 const PORT = 3000;
 
+const friends = [
+    {
+        id: 0,
+        name: 'Johnathon Doe',
+    },
+    {
+        id: 1,
+        name: 'John Doe',
+    },
+    {
+        id: 2,
+        name: 'Jane Doe',
+    },
+]
+
 const server = http.createServer((req, res) => {
-    if (req.url === '/friends') {
+    const items = req.url.split('/');
+    if (items[1] === 'friends') {
         res.writeHead(200, {
             'Content-Type': 'application/json'
         });
-        res.end(JSON.stringify({
-            id: 1,
-            name: 'John Doe',    
-        }));
-    } else if (req.url === '/messages') {
+        if (items.length === 3){
+            const friendIndex = parseInt(items[2]);
+            res.end(JSON.stringify(friends[friendIndex]));
+        } else {
+            res.end(JSON.stringify(friends));
+        }
+    } else if (items[1] === 'messages') {
         res.setHeader('Content-Type', 'text/html');
         res.write('<html>');
         res.write('<body>');
@@ -26,8 +44,7 @@ const server = http.createServer((req, res) => {
         res.writeHead(404, {
             'Content-Type': 'text/html'
         });
-        res.end('<h1>Page not found!</h1>');
-    
+        res.end('<h1>Page not found!</h1>'); 
     }
 });
 
